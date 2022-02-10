@@ -1,0 +1,96 @@
+{
+    "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+    "contentVersion": "1.0.0.0",
+    "parameters": {
+        "virtualMachines_BTNMEdcaHost_name": {
+            "defaultValue": "BTNMEdcaHost",
+            "type": "String"
+        },
+        "disks_BTNMEdcaHost_OsDisk_1_cca85a971eed43edbcd75d4f9bd03f08_externalid": {
+            "defaultValue": "/subscriptions/091e539b-d45b-4c17-8c91-c6a76df481e0/resourceGroups/BTNMEDCAWEB/providers/Microsoft.Compute/disks/BTNMEdcaHost_OsDisk_1_cca85a971eed43edbcd75d4f9bd03f08",
+            "type": "String"
+        },
+        "networkInterfaces_btnmedcahost928_externalid": {
+            "defaultValue": "/subscriptions/091e539b-d45b-4c17-8c91-c6a76df481e0/resourceGroups/BTNMEdcaWeb/providers/Microsoft.Network/networkInterfaces/btnmedcahost928",
+            "type": "String"
+        }
+    },
+    "variables": {},
+    "resources": [
+        {
+            "type": "Microsoft.Compute/virtualMachines",
+            "apiVersion": "2021-07-01",
+            "name": "[parameters('virtualMachines_BTNMEdcaHost_name')]",
+            "location": "eastasia",
+            "plan": {
+                "name": "4-4",
+                "product": "wordpress",
+                "publisher": "bitnami"
+            },
+            "properties": {
+                "hardwareProfile": {
+                    "vmSize": "Standard_B1s"
+                },
+                "storageProfile": {
+                    "imageReference": {
+                        "publisher": "bitnami",
+                        "offer": "wordpress",
+                        "sku": "4-4",
+                        "version": "latest"
+                    },
+                    "osDisk": {
+                        "osType": "Linux",
+                        "name": "[concat(parameters('virtualMachines_BTNMEdcaHost_name'), '_OsDisk_1_cca85a971eed43edbcd75d4f9bd03f08')]",
+                        "createOption": "FromImage",
+                        "caching": "ReadWrite",
+                        "managedDisk": {
+                            "storageAccountType": "StandardSSD_LRS",
+                            "id": "[parameters('disks_BTNMEdcaHost_OsDisk_1_cca85a971eed43edbcd75d4f9bd03f08_externalid')]"
+                        },
+                        "deleteOption": "Delete",
+                        "diskSizeGB": 30
+                    },
+                    "dataDisks": []
+                },
+                "osProfile": {
+                    "computerName": "[parameters('virtualMachines_BTNMEdcaHost_name')]",
+                    "adminUsername": "testingadmin",
+                    "linuxConfiguration": {
+                        "disablePasswordAuthentication": true,
+                        "ssh": {
+                            "publicKeys": [
+                                {
+                                    "path": "/home/testingadmin/.ssh/authorized_keys",
+                                    "keyData": "ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABgQDpM9oL3LJgbJrrbuqE6aGJ4hHS\r\nXEuCDaV2jYYiSWY65XsAlDQJCBV3se/G/nd9zdSKpfZGxel0u+752DPK0VfMBWdQ\r\nopJd0ihNnJRFkr6GNnRGarodfsHnDx6HcTRhRi38TsYxFB8mHBVlFgjCNtivrHv3\r\ngeUjaKhUe4va8lkA7tr6tb0BHmVghQMHZ/l6Qk8oMpVEBGpFwH+1GWcZVNehXMHh\r\nKmxRbxqxZ5JNqhgRqS0FFTl4UfPwQT23Cihvm8stQk2VOe/R9+GI9l1W0F5SIMhJ\r\nXV6luPi+ZqHTveJjRirr3oCVGLoD4qY/SH6LH1Hrcmuz+GboW8Bc4OoJJ9nyVts7\r\nMEKt0qdqvBPQv0jZuRGVea4UiM/jKcmwe8DfoBmPzrRKt+ZpfPli4n0feDuO1FHB\r\nCVpqJ1G/65B1dXWyngUlXxtLS6/xsv8p+ELML8yGcaWlCatwwhZdzpyTIpfNk00a\r\nr62ddhXa4i2QqN8kuJNat7a+TyPcZFzp7nPOg9E= generated-by-azure\r\n"
+                                }
+                            ]
+                        },
+                        "provisionVMAgent": true,
+                        "patchSettings": {
+                            "patchMode": "ImageDefault",
+                            "assessmentMode": "ImageDefault"
+                        }
+                    },
+                    "secrets": [],
+                    "allowExtensionOperations": true,
+                    "requireGuestProvisionSignal": true
+                },
+                "networkProfile": {
+                    "networkInterfaces": [
+                        {
+                            "id": "[parameters('networkInterfaces_btnmedcahost928_externalid')]",
+                            "properties": {
+                                "deleteOption": "Delete"
+                            }
+                        }
+                    ]
+                },
+                "diagnosticsProfile": {
+                    "bootDiagnostics": {
+                        "enabled": true
+                    }
+                }
+            }
+        }
+    ]
+}
